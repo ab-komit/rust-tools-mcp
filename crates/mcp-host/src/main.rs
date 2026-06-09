@@ -109,43 +109,38 @@ impl PluginManager {
         }
     }
 
-    fn load_plugin(path: &Path) -> Result<LoadedPlugin, Box<dyn std::error::Error>> {
+    fn load_plugin(path: &Path) -> anyhow::Result<LoadedPlugin> {
         unsafe {
             let lib = Library::new(path)?;
 
             let abi_version: libloading::Symbol<unsafe extern "C" fn() -> u32> =
                 lib.get(b"plugin_abi_version")?;
             if abi_version() != ABI_VERSION {
-                return Err(format!("Unsupported ABI version: expected {ABI_VERSION}").into());
+                anyhow::bail!("Unsupported ABI version: expected {ABI_VERSION}");
             }
-            drop(abi_version);
 
-            let list_tools_fn: libloading::Symbol<unsafe extern "C" fn() -> *mut std::os::raw::c_char> =
-                lib.get(b"plugin_list_tools")?;
-            let tools_json = c_str_to_string(list_tools_fn());
-            let tools: Vec<ToolDescriptor> = serde_json::from_str(&tools_json)?;
-            drop(list_tools_fn);
+            let tools = {
+                let list_tools_fn: libloading::Symbol<
+                    unsafe extern "C" fn() -> *mut std::os::raw::c_char,
+                > = lib.get(b"plugin_list_tools")?;
+                let json = c_str_to_string(list_tools_fn());
+                serde_json::from_str::<Vec<ToolDescriptor>>(&json)?
+            };
 
-            let plugin_name_fn: libloading::Symbol<unsafe extern "C" fn() -> *mut std::os::raw::c_char> =
-                lib.get(b"plugin_name")?;
-            let name_ptr = plugin_name_fn();
-            let name = c_str_to_string(name_ptr);
+            let call_tool: unsafe extern "C" fn(*const std::os::raw::c_char, *const std::os::raw::c_char) -> *mut std::os::raw::c_char =
+                *lib.get(b"plugin_call_tool")?;
+            let free_string: unsafe extern "C" fn(*mut std::os::raw::c_char) =
+                *lib.get(b"plugin_free_string")?;
 
-            let call_tool: libloading::Symbol<
-                unsafe extern "C" fn(
-                    *const std::os::raw::c_char,
-                    *const std::os::raw::c_char,
-                ) -> *mut std::os::raw::c_char,
-            > = lib.get(b"plugin_call_tool")?;
-            let call_tool = *call_tool;
-
-            let free_string: libloading::Symbol<
-                unsafe extern "C" fn(*mut std::os::raw::c_char),
-            > = lib.get(b"plugin_free_string")?;
-            let free_string = *free_string;
-
-            (free_string)(name_ptr);
-            drop(plugin_name_fn);
+            let name = {
+                let plugin_name_fn: libloading::Symbol<
+                    unsafe extern "C" fn() -> *mut std::os::raw::c_char,
+                > = lib.get(b"plugin_name")?;
+                let ptr = plugin_name_fn();
+                let name = c_str_to_string(ptr);
+                free_string(ptr);
+                name
+            };
 
             Ok(LoadedPlugin {
                 _name: name,

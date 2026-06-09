@@ -2,12 +2,16 @@
 name = "hello-plugin"
 version = "0.1.0"
 edition = "2021"
+authors = ["Andy <andreas.bosteen@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/Ochnee/rust-tools-mcp"
+description = "Example plugin for rust-tools-mcp"
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 mcp-plugin-sdk = { path = "../../crates/mcp-plugin-sdk" }
-mcp-plugin-sdk-macros = { path = "../../crates/mcp-plugin-sdk-macros" }
-serde = { version = "1", features = ["derive"] }
-schemars = "0.8"
+serde = { workspace = true }
+schemars = { workspace = true }

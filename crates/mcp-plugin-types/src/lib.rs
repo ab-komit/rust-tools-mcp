@@ -27,6 +27,7 @@ pub struct ContentItem {
 }
 
 impl ToolResult {
+    #[must_use]
     pub fn success(text: impl Into<String>) -> Self {
         Self {
             content: vec![ContentItem {
@@ -37,6 +38,7 @@ impl ToolResult {
         }
     }
 
+    #[must_use]
     pub fn error(text: impl Into<String>) -> Self {
         Self {
             content: vec![ContentItem {
@@ -48,6 +50,10 @@ impl ToolResult {
     }
 }
 
+/// # Safety
+///
+/// `ptr` must be a valid, null-terminated C string allocated by the plugin.
+/// The caller must not use the returned `String` after the plugin is unloaded.
 pub unsafe fn c_str_to_string(ptr: *const c_char) -> String {
     CStr::from_ptr(ptr).to_string_lossy().into_owned()
 }
@@ -56,6 +62,10 @@ pub fn string_to_c_str(s: String) -> *mut c_char {
     CString::new(s).unwrap_or_default().into_raw()
 }
 
+/// # Safety
+///
+/// `ptr` must have been allocated by a plugin via `string_to_c_str`.
+/// Calling with a null pointer is safe and treated as a no-op.
 pub unsafe fn free_c_str(ptr: *mut c_char) {
     if !ptr.is_null() {
         drop(CString::from_raw(ptr));

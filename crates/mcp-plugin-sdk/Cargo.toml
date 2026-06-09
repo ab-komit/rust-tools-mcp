@@ -2,10 +2,14 @@
 name = "mcp-plugin-sdk"
 version = "0.1.0"
 edition = "2021"
+authors = ["Andy <andreas.bosteen@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/Ochnee/rust-tools-mcp"
+description = "SDK for writing rust-tools-mcp plugin tools (re-exports)"
 
 [dependencies]
 mcp-plugin-types = { path = "../mcp-plugin-types" }
 mcp-plugin-sdk-macros = { path = "../mcp-plugin-sdk-macros" }
-schemars = "0.8"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

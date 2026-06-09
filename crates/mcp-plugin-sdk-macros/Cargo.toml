@@ -2,6 +2,10 @@
 name = "mcp-plugin-sdk-macros"
 version = "0.1.0"
 edition = "2021"
+authors = ["Andy <andreas.bosteen@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/Ochnee/rust-tools-mcp"
+description = "Proc macros for the rust-tools-mcp plugin system"
 
 [lib]
 proc-macro = true

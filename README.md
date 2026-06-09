@@ -37,7 +37,7 @@ Add to `opencode.json`:
 ```rust
 use mcp_plugin_sdk::serde::Deserialize;
 use mcp_plugin_sdk::schemars::JsonSchema;
-use mcp_plugin_sdk_macros::{tool, tool_plugin};
+use mcp_plugin_sdk::{tool, tool_plugin};
 
 #[derive(Deserialize, JsonSchema)]
 struct ReviewArgs {
@@ -71,8 +71,7 @@ name = "my-tool"
 crate-type = ["cdylib"]
 
 [dependencies]
-mcp-plugin-sdk = { git = "https://github.com/you/rust-tools-mcp" }
-mcp-plugin-sdk-macros = { git = "https://github.com/you/rust-tools-mcp" }
+mcp-plugin-sdk = { git = "https://github.com/Ochnee/rust-tools-mcp" }
 serde = { version = "1", features = ["derive"] }
 schemars = "0.8"
 ```
@@ -122,12 +121,14 @@ Project tools override global tools with the same name.
 ```
 rust-tools-mcp/
 ├── crates/
-│   ├── mcp-host/           # MCP server binary (standalone)
-│   ├── mcp-plugin-sdk/     # Re-exports for plugin authors
+│   ├── mcp-host/               # MCP server binary (standalone)
+│   ├── mcp-plugin-sdk/         # Re-exports for plugin authors
 │   ├── mcp-plugin-sdk-macros/  # #[tool] + #[tool_plugin] proc macros
-│   └── mcp-plugin-types/   # Shared ABI types
-└── examples/
-    └── hello-plugin/       # Example plugin
+│   └── mcp-plugin-types/       # Shared ABI types
+├── examples/
+│   └── hello-plugin/           # Example plugin
+└── skills/
+    └── create-rust-mcp-tool/   # Guide for writing plugins
 ```
 
 ## License

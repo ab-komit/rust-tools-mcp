@@ -1,7 +1,6 @@
 use mcp_plugin_sdk::serde::Deserialize;
 use mcp_plugin_sdk::schemars::JsonSchema;
-#[allow(unused_imports)]
-use mcp_plugin_sdk_macros::{tool, tool_plugin};
+use mcp_plugin_sdk::tool_plugin;
 
 #[derive(Deserialize, JsonSchema)]
 struct GreetArgs {
