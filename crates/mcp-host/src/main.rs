@@ -200,14 +200,13 @@ fn default_global_dir() -> PathBuf {
     let home = std::env::var("HOME")
         .or_else(|_| std::env::var("USERPROFILE"))
         .unwrap_or_else(|_| ".".into());
-    PathBuf::from(home).join(".config").join("opencode").join("rust-tools")
+    PathBuf::from(home).join(".config").join("rust-tools")
 }
 
 fn default_project_dir() -> PathBuf {
     std::env::current_dir()
         .unwrap_or_default()
-        .join(".opencode")
-        .join("rust-tools")
+        .join(".rust-tools")
 }
 
 // ── MCP server ──────────────────────────────────────────────────────────

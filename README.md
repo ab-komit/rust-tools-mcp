@@ -1,6 +1,6 @@
-# opencode-rust-tools-mcp
+# rust-tools-mcp
 
-An **MCP server** that loads Rust-based tool plugins as `cdylib` shared libraries. Drop `*.so`/`*.dylib`/`*.dll` files into `~/.config/opencode/rust-tools/` and they're automatically registered as MCP tools with typed JSON Schemas.
+An **MCP server** that loads Rust-based tool plugins as `cdylib` shared libraries. Drop `*.so`/`*.dylib`/`*.dll` files into `~/.config/rust-tools/` and they're automatically registered as MCP tools with typed JSON Schemas.
 
 Works with any MCP client: opencode, Claude Desktop, VS Code Copilot, `mcp-cli`, etc.
 
@@ -14,8 +14,8 @@ cargo build --release -p mcp-host
 cargo build --release -p hello-plugin
 
 # Install the plugin
-mkdir -p ~/.config/opencode/rust-tools
-cp target/release/libhello_plugin.so ~/.config/opencode/rust-tools/
+mkdir -p ~/.config/rust-tools
+cp target/release/libhello_plugin.so ~/.config/rust-tools/
 ```
 
 Add to `opencode.json`:
@@ -25,7 +25,7 @@ Add to `opencode.json`:
   "mcp": {
     "servers": {
       "rust-tools": {
-        "command": "/path/to/opencode-rust-tools-mcp/target/release/mcp-host"
+        "command": "/path/to/rust-tools-mcp/target/release/mcp-host"
       }
     }
   }
@@ -71,8 +71,8 @@ name = "my-tool"
 crate-type = ["cdylib"]
 
 [dependencies]
-mcp-plugin-sdk = { git = "https://github.com/you/opencode-rust-tools-mcp" }
-mcp-plugin-sdk-macros = { git = "https://github.com/you/opencode-rust-tools-mcp" }
+mcp-plugin-sdk = { git = "https://github.com/you/rust-tools-mcp" }
+mcp-plugin-sdk-macros = { git = "https://github.com/you/rust-tools-mcp" }
 serde = { version = "1", features = ["derive"] }
 schemars = "0.8"
 ```
@@ -81,7 +81,7 @@ Then build and install:
 
 ```bash
 cargo build --release
-cp target/release/libmy_tool.so ~/.config/opencode/rust-tools/
+cp target/release/libmy_tool.so ~/.config/rust-tools/
 ```
 
 ## How it works
@@ -112,15 +112,15 @@ All generated automatically by the `#[tool_plugin]` proc macro.
 
 | Scope | Path |
 |---|---|
-| Global | `~/.config/opencode/rust-tools/` |
-| Project | `./.opencode/rust-tools/` |
+| Global | `~/.config/rust-tools/` |
+| Project | `./.rust-tools/` |
 
 Project tools override global tools with the same name.
 
 ## Project structure
 
 ```
-opencode-rust-tools-mcp/
+rust-tools-mcp/
 ├── crates/
 │   ├── mcp-host/           # MCP server binary (standalone)
 │   ├── mcp-plugin-sdk/     # Re-exports for plugin authors
