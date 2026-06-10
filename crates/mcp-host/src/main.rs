@@ -24,6 +24,7 @@ struct ServerInfo {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct InitializeResult {
     protocol_version: String,
     capabilities: serde_json::Value,
